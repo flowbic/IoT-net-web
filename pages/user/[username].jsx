@@ -62,7 +62,7 @@ export const getServerSideProps = async (context) => {
     const { params } = context
     const { username } = params
     console.log(username)
-    const res = await fetch('http://localhost:4000/v1/request/user/' + username, {
+    const res = await fetch(process.env.NEXT_PUBLIC_SERVER + '/request/user/' + username, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
