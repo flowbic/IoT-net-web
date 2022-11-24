@@ -7,6 +7,10 @@ import { LineChart, XAxis, YAxis, Tooltip, CartesianGrid, Line } from 'recharts'
 
 export default function UserProfile({ requests, device }) {
 
+
+  console.log('NEXT_PUBLIC_SERVER')
+  console.log(process.env.NEXT_PUBLIC_SERVER)
+
   const requestData = requests.sort((a, b) => new Date(a.created) - new Date(b.created))
   for (let i = 0; i < requestData.length; i++) {  
     requestData[i] = {
@@ -99,7 +103,7 @@ export const getServerSideProps = async (context) => {
     const { params } = context
     const { deviceId } = params
     console.log(deviceId)
-    const res = await fetch('http://localhost:4000/v1/request/device/' + deviceId, {
+    const res = await fetch(process.env.NEXT_PUBLIC_SERVER +'/request/device/' + deviceId, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -107,7 +111,7 @@ export const getServerSideProps = async (context) => {
     })
     const data = await res.json()
 
-    const resDevice = await fetch('http://localhost:4000/v1/device/' + deviceId + "?order=asc", {
+    const resDevice = await fetch(process.env.NEXT_PUBLIC_SERVER + '/device/' + deviceId + "?order=asc", {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
