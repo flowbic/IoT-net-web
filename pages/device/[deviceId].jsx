@@ -4,13 +4,39 @@ import { useEffect } from 'react'
 import styles from '../../styles/Home.module.css'
 import { LineChart, XAxis, YAxis, Tooltip, CartesianGrid, Line } from 'recharts'
 
+function LineCharts({ requests, device }) {
+  return (
+    <>
+    <LineChart
+          width={400}
+          height={200}
+          data={requestData}
+          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+        >
+          {/* <XAxis dataKey="created" /> */}
+          <Tooltip />
+          {/* <CartesianGrid stroke="#f5f5f5" /> */}
+          {/* <Line type="monotone" dataKey="Hum_SHT" stroke="#ff7300" yAxisId={0} /> */}
+          <Line type="monotone" dataKey="TempC_DS" stroke="#387908" yAxisId={0} />
+          <Line type="monotone" dataKey="TempC_SHT" stroke="#9510AA" yAxisId={1} />
+        </LineChart>
+
+        <LineChart
+          width={400}
+          height={100}
+          data={requestData}
+          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+        >
+          <XAxis dataKey="created" />
+          <Tooltip />
+          {/* <CartesianGrid stroke="#f5f5f5" /> */}
+          <Line type="monotone" dataKey="Hum_SHT" stroke="#ff7300" yAxisId={0} />
+        </LineChart>
+      </>
+  )
+}
 
 export default function UserProfile({ requests, device }) {
-
-
-  console.log('NEXT_PUBLIC_SERVER')
-  console.log(process.env.NEXT_PUBLIC_SERVER)
-
   const requestData = requests.sort((a, b) => new Date(a.created) - new Date(b.created))
   for (let i = 0; i < requestData.length; i++) {  
     requestData[i] = {
@@ -56,31 +82,7 @@ export default function UserProfile({ requests, device }) {
             </body>
         </table>
         
-        <LineChart
-          width={400}
-          height={200}
-          data={requestData}
-          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-        >
-          {/* <XAxis dataKey="created" /> */}
-          <Tooltip />
-          {/* <CartesianGrid stroke="#f5f5f5" /> */}
-          {/* <Line type="monotone" dataKey="Hum_SHT" stroke="#ff7300" yAxisId={0} /> */}
-          <Line type="monotone" dataKey="TempC_DS" stroke="#387908" yAxisId={0} />
-          <Line type="monotone" dataKey="TempC_SHT" stroke="#9510AA" yAxisId={1} />
-        </LineChart>
-
-        <LineChart
-          width={400}
-          height={100}
-          data={requestData}
-          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-        >
-          <XAxis dataKey="created" />
-          <Tooltip />
-          {/* <CartesianGrid stroke="#f5f5f5" /> */}
-          <Line type="monotone" dataKey="Hum_SHT" stroke="#ff7300" yAxisId={0} />
-        </LineChart>
+        
       </main>
 
       <footer className={styles.footer}>
