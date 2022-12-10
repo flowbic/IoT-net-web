@@ -1,42 +1,45 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import styles from '../../styles/Home.module.css'
 import { LineChart, XAxis, YAxis, Tooltip, CartesianGrid, Line } from 'recharts'
 
 function LineCharts({ requests, device }) {
   return (
-    <>
-    <LineChart
-          width={400}
-          height={200}
-          data={requestData}
-          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-        >
-          {/* <XAxis dataKey="created" /> */}
-          <Tooltip />
-          {/* <CartesianGrid stroke="#f5f5f5" /> */}
-          {/* <Line type="monotone" dataKey="Hum_SHT" stroke="#ff7300" yAxisId={0} /> */}
-          <Line type="monotone" dataKey="TempC_DS" stroke="#387908" yAxisId={0} />
-          <Line type="monotone" dataKey="TempC_SHT" stroke="#9510AA" yAxisId={1} />
-        </LineChart>
+    <div>
+      <LineChart
+        width={600}
+        height={200}
+        data={requests}
+        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+      >
+        {/* <XAxis dataKey="created" /> */}
+        <YAxis type="number" />
+        <Tooltip />
+        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+        <Line dot={false} type="monotone" dataKey="TempC_DS" stroke="#387908"  />
+        <Line dot={false} type="monotone" dataKey="TempC_SHT" stroke="#9510AA" />
+      </LineChart>
 
-        <LineChart
-          width={400}
-          height={100}
-          data={requestData}
-          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-        >
-          <XAxis dataKey="created" />
-          <Tooltip />
-          {/* <CartesianGrid stroke="#f5f5f5" /> */}
-          <Line type="monotone" dataKey="Hum_SHT" stroke="#ff7300" yAxisId={0} />
-        </LineChart>
-      </>
+      <LineChart
+        width={600}
+        height={100}
+        data={requests}
+        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+      >
+        <YAxis scale="auto" yAxisId={0} />
+        <XAxis scale="auto" dataKey="created" />
+        <Tooltip />
+        {/* <CartesianGrid stroke="#f5f5f5" /> */}
+        <Line dot={false} type="monotone" dataKey="Hum_SHT" stroke="#ff7300" yAxisId={0} />
+      </LineChart>
+    </div>
   )
 }
 
 export default function UserProfile({ requests, device }) {
+  const [ready, setReady] = useState(false)
+
   const requestData = requests.sort((a, b) => new Date(a.created) - new Date(b.created))
   for (let i = 0; i < requestData.length; i++) {  
     requestData[i] = {
@@ -50,8 +53,14 @@ export default function UserProfile({ requests, device }) {
     }
   }
   const lastRequest = requestData[requestData.length - 1]
-
+  const getDateAndTimeAsString = (date) => {
+    const d = new Date(date)
+    return `${d.getDate()}/${d.getMonth() + 1} ${d.getHours()}:${d.getMinutes()}`
+}
   console.log(device)
+  useEffect(() => {
+    setReady(true)
+  }, [])
     
   return (
     <div className={styles.container}>
@@ -65,8 +74,9 @@ export default function UserProfile({ requests, device }) {
         <h1 className={styles.title}>
           {device.name}
         </h1>
+        <p style={{color: "#f0f0f0"}}>Last seen: {getDateAndTimeAsString(lastRequest.created)}</p>
         <table>
-            <body>
+            <tbody>
                 <tr style={{color: "#9510AA"}}>
                     <td>Inside: </td>
                     <td>{lastRequest.TempC_SHT}</td>
@@ -79,9 +89,9 @@ export default function UserProfile({ requests, device }) {
                     <td>Humidity inside</td>
                     <td>{lastRequest.Hum_SHT}</td>
                 </tr>
-            </body>
+            </tbody>
         </table>
-        
+        {ready && <LineCharts requests={requestData} device={device} />}
         
       </main>
 
